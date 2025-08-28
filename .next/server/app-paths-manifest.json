@@ -1,0 +1,10 @@
+{
+  "/api/websocket/route": "app/api/websocket/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/cameras/page": "app/cameras/page.js",
+  "/attendance/page": "app/attendance/page.js",
+  "/employees/page": "app/employees/page.js",
+  "/page": "app/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/reports/page": "app/reports/page.js"
+}

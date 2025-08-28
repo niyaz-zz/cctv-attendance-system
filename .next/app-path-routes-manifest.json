@@ -1,0 +1,10 @@
+{
+  "/api/websocket/route": "/api/websocket",
+  "/_not-found/page": "/_not-found",
+  "/cameras/page": "/cameras",
+  "/attendance/page": "/attendance",
+  "/employees/page": "/employees",
+  "/page": "/",
+  "/settings/page": "/settings",
+  "/reports/page": "/reports"
+}
