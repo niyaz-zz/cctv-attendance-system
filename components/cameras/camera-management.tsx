@@ -194,12 +194,12 @@ export function CameraManagement() {
             Manage CCTV cameras, configure recognition settings, and monitor live feeds
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setIsSettingsDialogOpen(true)} variant="outline">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Button onClick={() => setIsSettingsDialogOpen(true)} variant="outline" className="w-full sm:w-auto">
             <Settings className="mr-2 h-4 w-4" />
             Settings
           </Button>
-          <Button onClick={handleAddCamera}>
+          <Button onClick={handleAddCamera} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Add Camera
           </Button>

@@ -41,31 +41,31 @@ export function KPICards() {
       title: "Total Employees",
       value: kpiData.totalEmployees.toLocaleString(),
       icon: Users,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
+      iconColor: "text-blue-600",
+      bgColor: "bg-blue-100",
     },
     {
       title: "Present Today",
       value: kpiData.presentToday.toLocaleString(),
       icon: UserCheck,
-      color: "text-secondary",
-      bgColor: "bg-secondary/10",
+      iconColor: "text-blue-700",
+      bgColor: "bg-blue-100",
       subtitle: `${((kpiData.presentToday / kpiData.totalEmployees) * 100).toFixed(1)}% attendance`,
     },
     {
       title: "Cameras Online",
       value: `${kpiData.camerasOnline}/15`,
       icon: Camera,
-      color: "text-accent",
-      bgColor: "bg-accent/10",
+      iconColor: "text-sky-600",
+      bgColor: "bg-sky-100",
       subtitle: `${((kpiData.camerasOnline / 15) * 100).toFixed(0)}% operational`,
     },
     {
       title: "Attendance Rate",
       value: `${kpiData.attendanceRate}%`,
       icon: TrendingUp,
-      color: "text-chart-1",
-      bgColor: "bg-chart-1/10",
+      iconColor: "text-orange-600",
+      bgColor: "bg-orange-100",
       subtitle: "This month average",
     },
   ]
@@ -76,8 +76,9 @@ export function KPICards() {
         <Card key={index} className="relative overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">{card.title}</CardTitle>
-            <div className={`p-2 rounded-lg ${card.bgColor}`}>
-              <card.icon className={`h-4 w-4 ${card.color}`} />
+            {/* Ensure icon is always visible with explicit color and background */}
+            <div className={`p-2 rounded-full ${card.bgColor}`}>
+              <card.icon className={`h-6 w-6 ${card.iconColor}`} />
             </div>
           </CardHeader>
           <CardContent>

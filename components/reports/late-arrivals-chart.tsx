@@ -24,6 +24,22 @@ export function LateArrivalsChart({ data }: LateArrivalsChartProps) {
         <CardDescription>Distribution of late arrivals throughout the morning hours</CardDescription>
       </CardHeader>
       <CardContent>
+                {/* Responsive wrapper for mobile */}
+        <div
+          style={{
+            width: "auto",
+            minWidth: 0,
+            overflowX: "auto",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              minWidth: 320,
+              height: "auto",
+              maxHeight: "60vw",
+            }}
+          >
         <ChartContainer config={chartConfig} className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -44,6 +60,8 @@ export function LateArrivalsChart({ data }: LateArrivalsChartProps) {
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
+        </div>
+        </div>
       </CardContent>
     </Card>
   )

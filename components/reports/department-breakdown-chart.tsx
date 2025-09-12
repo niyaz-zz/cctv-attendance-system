@@ -40,19 +40,37 @@ export function DepartmentBreakdownChart({ data }: DepartmentBreakdownChartProps
           <CardDescription>Employee attendance status by department</CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={safeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="department" angle={-45} textAnchor="end" height={80} />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Bar dataKey="present" stackId="a" name={chartConfig.present.label} fill={chartConfig.present.color} />
-                <Bar dataKey="late" stackId="a" name={chartConfig.late.label} fill={chartConfig.late.color} />
-                <Bar dataKey="absent" stackId="a" name={chartConfig.absent.label} fill={chartConfig.absent.color} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+          {/* Responsive wrapper for mobile */}
+          <div
+            style={{
+              width: "100%",
+              minWidth: 0,
+              overflowX: "auto",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                minWidth: 320,
+                height: "300px",
+                maxHeight: "60vw",
+              }}
+            >
+              <ChartContainer config={chartConfig} className="h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={safeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <XAxis dataKey="department" angle={-45} textAnchor="end" height={80} />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Legend />
+                    <Bar dataKey="present" stackId="a" name={chartConfig.present.label} fill={chartConfig.present.color} />
+                    <Bar dataKey="late" stackId="a" name={chartConfig.late.label} fill={chartConfig.late.color} />
+                    <Bar dataKey="absent" stackId="a" name={chartConfig.absent.label} fill={chartConfig.absent.color} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -63,27 +81,45 @@ export function DepartmentBreakdownChart({ data }: DepartmentBreakdownChartProps
           <CardDescription>Attendance percentage by department</CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={safeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="department" angle={-45} textAnchor="end" height={80} />
-                <YAxis domain={[0, 100]} />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      formatter={(value) => [`${Number(value).toFixed(1)}%`, chartConfig.attendanceRate.label]}
+          {/* Responsive wrapper for mobile */}
+          <div
+            style={{
+              width: "100%",
+              minWidth: 0,
+              overflowX: "auto",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                minWidth: 320,
+                height: "300px",
+                maxHeight: "60vw",
+              }}
+            >
+              <ChartContainer config={chartConfig} className="h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={safeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <XAxis dataKey="department" angle={-45} textAnchor="end" height={80} />
+                    <YAxis domain={[0, 100]} />
+                    <ChartTooltip
+                      content={
+                        <ChartTooltipContent
+                          formatter={(value) => [`${Number(value).toFixed(1)}%`, chartConfig.attendanceRate.label]}
+                        />
+                      }
                     />
-                  }
-                />
-                <Legend />
-                <Bar
-                  dataKey="attendanceRate"
-                  name={chartConfig.attendanceRate.label}
-                  fill={chartConfig.attendanceRate.color}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+                    <Legend />
+                    <Bar
+                      dataKey="attendanceRate"
+                      name={chartConfig.attendanceRate.label}
+                      fill={chartConfig.attendanceRate.color}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

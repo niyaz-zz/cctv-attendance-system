@@ -231,7 +231,7 @@ export function AttendanceSystem() {
           <h1 className="text-3xl font-heading">Attendance Logs</h1>
           <p className="text-muted-foreground">View and manage employee attendance records</p>
         </div>
-        <Button onClick={handleExportCSV} className="bg-secondary hover:bg-secondary/90">
+        <Button onClick={handleExportCSV} className="bg-primary">
           <Download className="mr-2 h-4 w-4" />
           Export CSV
         </Button>

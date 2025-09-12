@@ -152,7 +152,7 @@ export function ReportsAnalytics() {
           <h1 className="text-3xl font-heading">Reports & Analytics</h1>
           <p className="text-muted-foreground">Comprehensive attendance insights and trends</p>
         </div>
-        <Button onClick={handleExportReport} className="bg-secondary hover:bg-secondary/90">
+        <Button onClick={handleExportReport} className="bg-primary">
           <Download className="mr-2 h-4 w-4" /> Export Report
         </Button>
       </div>

@@ -42,28 +42,46 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
         <CardDescription>Daily attendance patterns showing present, late, and absent employees</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <XAxis dataKey="date" />
-              <YAxis />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Legend />
-              {Object.entries(chartConfig).map(([key, cfg]) => (
-                <Area
-                  key={key}
-                  type="monotone"
-                  dataKey={key}
-                  name={cfg.label}
-                  stackId="1"
-                  stroke={cfg.color}
-                  fill={cfg.color}
-                  fillOpacity={0.8}
-                />
-              ))}
-            </AreaChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+        {/* Add responsive and overflow styles here */}
+        <div
+          style={{
+            width: "100%",
+            minWidth: 0,
+            overflowX: "auto",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              minWidth: 320, // Minimum width for small screens
+              height: "400px",
+              maxHeight: "60vw",
+            }}
+          >
+            <ChartContainer config={chartConfig} className="h-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Legend />
+                  {Object.entries(chartConfig).map(([key, cfg]) => (
+                    <Area
+                      key={key}
+                      type="monotone"
+                      dataKey={key}
+                      name={cfg.label}
+                      stackId="1"
+                      stroke={cfg.color}
+                      fill={cfg.color}
+                      fillOpacity={0.8}
+                    />
+                  ))}
+                </AreaChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </div>
+        </div>
       </CardContent>
     </Card>
   )
