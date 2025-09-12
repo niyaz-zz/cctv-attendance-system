@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,17 +9,19 @@ import { Camera, Upload, RotateCcw, Check, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface FaceRegistrationProps {
+  employeeId?: string                      // ✅ added for backend link
   existingFaceData?: string
   existingAvatar?: string
   onFaceRegistered: (faceData: string, avatar: string) => void
 }
 
-export function FaceRegistration({ existingFaceData, existingAvatar, onFaceRegistered }: FaceRegistrationProps) {
+export function FaceRegistration({ employeeId, existingFaceData, existingAvatar, onFaceRegistered }: FaceRegistrationProps) {
   const [isCapturing, setIsCapturing] = useState(false)
   const [capturedImage, setCapturedImage] = useState<string | null>(existingAvatar || null)
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [error, setError] = useState<string>("")
   const [isSaved, setIsSaved] = useState(false)
+  const [loading, setLoading] = useState(false)              // ✅ minimal loading state
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -36,7 +37,7 @@ export function FaceRegistration({ existingFaceData, existingAvatar, onFaceRegis
         videoRef.current.srcObject = mediaStream
       }
       setIsCapturing(true)
-    } catch (err) {
+    } catch {
       setError("Unable to access camera. Please check permissions and try again.")
     }
   }, [])
@@ -59,7 +60,6 @@ export function FaceRegistration({ existingFaceData, existingAvatar, onFaceRegis
         canvas.width = video.videoWidth
         canvas.height = video.videoHeight
         context.drawImage(video, 0, 0)
-
         const imageDataUrl = canvas.toDataURL("image/jpeg", 0.8)
         setCapturedImage(imageDataUrl)
         stopCamera()
@@ -83,23 +83,53 @@ export function FaceRegistration({ existingFaceData, existingAvatar, onFaceRegis
     }
   }, [])
 
-  const handleSave = useCallback(() => {
-    if (capturedImage) {
-      // In a real application, you would process the image for face recognition here
-      // For now, we'll just save the image data
+  const handleSave = useCallback(async () => {
+    if (!capturedImage || !employeeId) return
+
+    try {
+      setLoading(true)
+      setError("")
+
+      // ✅ send to Flask API
+      const res = await fetch(`http://localhost:5000/api/employees/${employeeId}/face-data`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ faceData: capturedImage }),
+      })
+
+      if (!res.ok) throw new Error("Failed to save face data")
+
       onFaceRegistered(capturedImage, capturedImage)
       setIsSaved(true)
-      setError("")
       setTimeout(() => setIsSaved(false), 3000)
+    } catch (err: any) {
+      setError(err.message || "Failed to save face data")
+    } finally {
+      setLoading(false)
     }
-  }, [capturedImage, onFaceRegistered])
+  }, [capturedImage, employeeId, onFaceRegistered])
 
-  const handleRemove = useCallback(() => {
-    setCapturedImage(null)
-    onFaceRegistered("", "")
-    setIsSaved(false)
-    setError("")
-  }, [onFaceRegistered])
+  const handleRemove = useCallback(async () => {
+    if (!employeeId) {
+      setCapturedImage(null)
+      onFaceRegistered("", "")
+      return
+    }
+
+    try {
+      setLoading(true)
+      await fetch(`http://localhost:5000/api/employees/${employeeId}/face-data`, {
+        method: "DELETE",
+      })
+      setCapturedImage(null)
+      onFaceRegistered("", "")
+      setIsSaved(false)
+    } catch {
+      setError("Failed to remove face data")
+    } finally {
+      setLoading(false)
+    }
+  }, [employeeId, onFaceRegistered])
 
   const handleReset = useCallback(() => {
     setCapturedImage(null)
@@ -138,9 +168,7 @@ export function FaceRegistration({ existingFaceData, existingAvatar, onFaceRegis
                   muted
                   className="w-full h-64 object-cover"
                   onLoadedMetadata={() => {
-                    if (videoRef.current) {
-                      videoRef.current.play()
-                    }
+                    if (videoRef.current) videoRef.current.play()
                   }}
                 />
                 <div className="absolute inset-0 border-2 border-primary/50 rounded-lg pointer-events-none">
@@ -172,19 +200,16 @@ export function FaceRegistration({ existingFaceData, existingAvatar, onFaceRegis
               {isSaved && (
                 <Alert className="border-green-200 bg-green-50 text-green-800">
                   <Check className="h-4 w-4" />
-                  <AlertDescription>
-                    Face data saved successfully! You can now save the employee details.
-                  </AlertDescription>
+                  <AlertDescription>Face data saved successfully!</AlertDescription>
                 </Alert>
               )}
               <div className="flex gap-2 justify-center">
                 {!isSaved ? (
-                  <Button onClick={handleSave} className="bg-primary hover:bg-primary/90">
-                    <Check className="mr-2 h-4 w-4" />
-                    Save Face Data
+                  <Button onClick={handleSave} disabled={loading} className="bg-primary hover:bg-primary/90">
+                    {loading ? "Saving..." : (<><Check className="mr-2 h-4 w-4" /> Save Face Data</>)}
                   </Button>
                 ) : (
-                  <Button onClick={handleRemove} variant="destructive">
+                  <Button onClick={handleRemove} variant="destructive" disabled={loading}>
                     <X className="mr-2 h-4 w-4" />
                     Remove Face Data
                   </Button>
@@ -213,14 +238,12 @@ export function FaceRegistration({ existingFaceData, existingAvatar, onFaceRegis
 
           {/* Existing Face Data */}
           {existingFaceData && !capturedImage && (
-            <div className="space-y-4">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-2">Current registered face:</p>
-                <Avatar className="h-24 w-24 mx-auto">
-                  <AvatarImage src={existingFaceData || "/placeholder.svg"} alt="Registered face" />
-                  <AvatarFallback>Face</AvatarFallback>
-                </Avatar>
-              </div>
+            <div className="space-y-4 text-center">
+              <p className="text-sm text-muted-foreground mb-2">Current registered face:</p>
+              <Avatar className="h-24 w-24 mx-auto">
+                <AvatarImage src={existingFaceData || "/placeholder.svg"} alt="Registered face" />
+                <AvatarFallback>Face</AvatarFallback>
+              </Avatar>
             </div>
           )}
 

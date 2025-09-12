@@ -1,10 +1,20 @@
 "use client"
+
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { useColorScheme } from "./color-scheme-provider"
 
-const colorSchemes = [
+type ColorScheme = "corporate-blue" | "security-green" | "tech-purple" | "executive-gray" | "alert-orange" | "default"
+
+const colorSchemes: {
+  name: string
+  value: ColorScheme
+  primary: string
+  secondary: string
+  accent: string
+  description: string
+}[] = [
   {
     name: "Corporate Blue",
     value: "corporate-blue",
@@ -58,10 +68,6 @@ const colorSchemes = [
 export function ColorSettings() {
   const { colorScheme: selectedScheme, setColorScheme } = useColorScheme()
 
-  const applyColorScheme = (scheme: string) => {
-    setColorScheme(scheme)
-  }
-
   return (
     <div className="space-y-3">
       <Label className="text-sm font-medium">Color Scheme</Label>
@@ -70,8 +76,9 @@ export function ColorSettings() {
           <Button
             key={scheme.value}
             variant={selectedScheme === scheme.value ? "default" : "outline"}
-            onClick={() => applyColorScheme(scheme.value)}
+            onClick={() => setColorScheme(scheme.value)}
             className="flex items-center justify-between h-auto p-3"
+            aria-pressed={selectedScheme === scheme.value}
           >
             <div className="flex items-center gap-3">
               <div className="flex gap-1">

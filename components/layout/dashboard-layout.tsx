@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -15,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, Menu, X, Home, Users, Clock, BarChart3, Camera, Settings } from "lucide-react"
+import { LogOut, Menu, X, Home, Users, Clock, BarChart3, Camera, Settings, Video } from "lucide-react"
 import { useAuth } from "@/components/auth/auth-provider"
 import { cn } from "@/lib/utils"
 import { ConnectionStatus } from "@/components/real-time/connection-status"
@@ -32,6 +31,7 @@ const navigation = [
   { name: "Attendance", href: "/attendance", icon: Clock },
   { name: "Reports", href: "/reports", icon: BarChart3 },
   { name: "Cameras", href: "/cameras", icon: Camera },
+  { name: "Live Feed", href: "/live", icon: Video }, // ✅ Added for HLS live stream
   { name: "Settings", href: "/settings", icon: Settings },
 ]
 

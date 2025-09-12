@@ -7,10 +7,12 @@ import { SystemSettings } from "./system-settings"
 
 export function SettingsContent() {
   return (
-    <div className="p-6 space-y-6">
+    <section className="p-6 space-y-6" aria-label="Settings">
       <div>
         <h1 className="text-3xl font-heading font-bold text-foreground">Settings</h1>
-        <p className="text-muted-foreground mt-2">Customize your CCTV attendance system preferences and appearance.</p>
+        <p className="text-muted-foreground mt-2">
+          Customize your CCTV attendance system preferences and appearance.
+        </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -30,11 +32,11 @@ export function SettingsContent() {
             <CardTitle>System Preferences</CardTitle>
             <CardDescription>Configure system-wide settings and preferences</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <SystemSettings />
           </CardContent>
         </Card>
       </div>
-    </div>
+    </section>
   )
 }

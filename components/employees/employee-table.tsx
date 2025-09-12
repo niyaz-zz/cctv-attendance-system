@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -15,9 +16,12 @@ interface EmployeeTableProps {
   onSort: (field: EmployeeSortField, direction: SortDirection) => void
   onEdit: (employee: Employee) => void
   onDelete: (employeeId: string) => void
+  onRegisterFace?: (employee: Employee) => void   // ✅ added
 }
 
-export function EmployeeTable({ employees, sortField, sortDirection, onSort, onEdit, onDelete }: EmployeeTableProps) {
+export function EmployeeTable({ employees, sortField, sortDirection, onSort, onEdit, onDelete, onRegisterFace }: EmployeeTableProps) {
+  const [loadingFace, setLoadingFace] = useState<string | null>(null)   // ✅ minimal state
+
   const handleSort = (field: EmployeeSortField) => {
     if (sortField === field) {
       onSort(field, sortDirection === "asc" ? "desc" : "asc")
@@ -118,9 +122,18 @@ export function EmployeeTable({ employees, sortField, sortDirection, onSort, onE
                       Registered
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-muted-foreground">
-                      Not Registered
-                    </Badge>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={loadingFace === employee.id}
+                      onClick={() => {
+                        setLoadingFace(employee.id)
+                        onRegisterFace?.(employee)
+                        setLoadingFace(null)
+                      }}
+                    >
+                      {loadingFace === employee.id ? "Registering..." : "Register Face"}
+                    </Button>
                   )}
                 </div>
               </TableCell>

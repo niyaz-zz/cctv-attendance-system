@@ -17,36 +17,59 @@ export function SystemSettings() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label className="text-sm font-medium">Real-time Notifications</Label>
+            <Label className="text-sm font-medium" htmlFor="notifications">
+              Real-time Notifications
+            </Label>
             <p className="text-xs text-muted-foreground">Receive live updates for attendance events</p>
           </div>
-          <Switch checked={notifications} onCheckedChange={setNotifications} />
+          <Switch
+            id="notifications"
+            checked={notifications}
+            onCheckedChange={setNotifications}
+            aria-label="Toggle real-time notifications"
+          />
         </div>
 
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label className="text-sm font-medium">Auto Refresh Dashboard</Label>
+            <Label className="text-sm font-medium" htmlFor="auto-refresh">
+              Auto Refresh Dashboard
+            </Label>
             <p className="text-xs text-muted-foreground">Automatically refresh dashboard data</p>
           </div>
-          <Switch checked={autoRefresh} onCheckedChange={setAutoRefresh} />
+          <Switch
+            id="auto-refresh"
+            checked={autoRefresh}
+            onCheckedChange={setAutoRefresh}
+            aria-label="Toggle auto-refresh dashboard"
+          />
         </div>
 
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label className="text-sm font-medium">Sound Alerts</Label>
+            <Label className="text-sm font-medium" htmlFor="sound-alerts">
+              Sound Alerts
+            </Label>
             <p className="text-xs text-muted-foreground">Play sounds for important events</p>
           </div>
-          <Switch checked={soundAlerts} onCheckedChange={setSoundAlerts} />
+          <Switch
+            id="sound-alerts"
+            checked={soundAlerts}
+            onCheckedChange={setSoundAlerts}
+            aria-label="Toggle sound alerts"
+          />
         </div>
       </div>
 
       <Separator />
 
-      <div className="space-y-3">
-        <Label className="text-sm font-medium">Refresh Interval</Label>
+      <div className="space-y-4">
+        <Label className="text-sm font-medium" htmlFor="refresh-interval">
+          Refresh Interval
+        </Label>
         <Select value={refreshInterval} onValueChange={setRefreshInterval}>
-          <SelectTrigger>
-            <SelectValue />
+          <SelectTrigger id="refresh-interval" aria-label="Select refresh interval">
+            <SelectValue placeholder="Choose interval" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="10">10 seconds</SelectItem>

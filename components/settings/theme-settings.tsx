@@ -15,7 +15,7 @@ export function ThemeSettings() {
   ]
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <Label className="text-sm font-medium">Theme Mode</Label>
       <div className="grid grid-cols-3 gap-2">
         {themes.map(({ value, label, icon: Icon }) => (
@@ -24,7 +24,11 @@ export function ThemeSettings() {
             variant={theme === value ? "default" : "outline"}
             size="sm"
             onClick={() => setTheme(value)}
-            className="flex flex-col items-center gap-2 h-auto py-3"
+            aria-label={`Set theme to ${label}`}
+            aria-pressed={theme === value}
+            className={`flex flex-col items-center gap-2 h-auto py-3 ${
+              theme === value ? "ring-2 ring-primary ring-offset-1" : ""
+            }`}
           >
             <Icon className="h-4 w-4" />
             <span className="text-xs">{label}</span>

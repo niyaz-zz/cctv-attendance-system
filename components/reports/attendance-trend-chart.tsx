@@ -30,7 +30,7 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
     return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
   }
 
-  const chartData = data.map((item) => ({
+  const chartData = (data ?? []).map((item) => ({
     ...item,
     date: formatDate(item.date),
   }))
@@ -49,30 +49,18 @@ export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
               <YAxis />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Legend />
-              <Area
-                type="monotone"
-                dataKey="present"
-                stackId="1"
-                stroke={chartConfig.present.color}
-                fill={chartConfig.present.color}
-                fillOpacity={0.8}
-              />
-              <Area
-                type="monotone"
-                dataKey="late"
-                stackId="1"
-                stroke={chartConfig.late.color}
-                fill={chartConfig.late.color}
-                fillOpacity={0.8}
-              />
-              <Area
-                type="monotone"
-                dataKey="absent"
-                stackId="1"
-                stroke={chartConfig.absent.color}
-                fill={chartConfig.absent.color}
-                fillOpacity={0.8}
-              />
+              {Object.entries(chartConfig).map(([key, cfg]) => (
+                <Area
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  name={cfg.label}
+                  stackId="1"
+                  stroke={cfg.color}
+                  fill={cfg.color}
+                  fillOpacity={0.8}
+                />
+              ))}
             </AreaChart>
           </ResponsiveContainer>
         </ChartContainer>

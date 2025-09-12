@@ -27,6 +27,7 @@ const chartConfig = {
 export function MonthlyOverviewChart({ data }: MonthlyOverviewChartProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Attendance & Late Arrivals */}
       <Card>
         <CardHeader>
           <CardTitle>Monthly Attendance & Late Arrivals</CardTitle>
@@ -43,12 +44,16 @@ export function MonthlyOverviewChart({ data }: MonthlyOverviewChartProps) {
                     <ChartTooltipContent
                       formatter={(value, name) => [
                         `${Number(value).toFixed(1)}%`,
-                        name === "avgAttendance" ? "Attendance" : "Late Arrivals",
+                        chartConfig[name as keyof typeof chartConfig]?.label || name,
                       ]}
                     />
                   }
                 />
-                <Legend />
+                <Legend
+                  formatter={(value) =>
+                    chartConfig[value as keyof typeof chartConfig]?.label || value
+                  }
+                />
                 <Line
                   type="monotone"
                   dataKey="avgAttendance"
@@ -69,6 +74,7 @@ export function MonthlyOverviewChart({ data }: MonthlyOverviewChartProps) {
         </CardContent>
       </Card>
 
+      {/* Working Hours */}
       <Card>
         <CardHeader>
           <CardTitle>Average Working Hours</CardTitle>
@@ -83,8 +89,16 @@ export function MonthlyOverviewChart({ data }: MonthlyOverviewChartProps) {
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
-                      formatter={(value) => [`${Number(value).toFixed(1)} hours`, "Avg Working Hours"]}
+                      formatter={(value, name) => [
+                        `${Number(value).toFixed(1)} hours`,
+                        chartConfig[name as keyof typeof chartConfig]?.label || name,
+                      ]}
                     />
+                  }
+                />
+                <Legend
+                  formatter={(value) =>
+                    chartConfig[value as keyof typeof chartConfig]?.label || value
                   }
                 />
                 <Line

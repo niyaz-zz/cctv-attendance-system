@@ -5,7 +5,7 @@ import { Wifi, WifiOff, Loader2, AlertTriangle } from "lucide-react"
 import { useWebSocket } from "@/hooks/use-websocket"
 
 export function ConnectionStatus() {
-  const { isConnected, connectionStatus } = useWebSocket()
+  const { connectionStatus } = useWebSocket()
 
   const getStatusConfig = () => {
     switch (connectionStatus) {
@@ -45,7 +45,9 @@ export function ConnectionStatus() {
 
   return (
     <Badge variant={config.variant} className={`${config.className} text-xs`}>
-      <Icon className={`h-3 w-3 mr-1 ${connectionStatus === "connecting" ? "animate-spin" : ""}`} />
+      <Icon
+        className={`h-3 w-3 mr-1 ${connectionStatus === "connecting" ? "animate-spin" : ""}`}
+      />
       {config.text}
     </Badge>
   )

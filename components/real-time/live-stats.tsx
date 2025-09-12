@@ -16,17 +16,19 @@ interface LiveStats {
 
 export function LiveStats() {
   const [stats, setStats] = useState<LiveStats>({
-    totalEmployees: 247,
-    presentToday: 189,
-    camerasOnline: 12,
-    recentActivity: 5,
+    totalEmployees: 0,
+    presentToday: 0,
+    camerasOnline: 0,
+    recentActivity: 0,
     lastUpdated: new Date().toISOString(),
   })
+
   const { subscribe, isConnected } = useWebSocket()
 
   useEffect(() => {
     if (!isConnected) return
 
+    // stats update from backend
     const unsubscribeStats = subscribe("stats:update", (newStats: Partial<LiveStats>) => {
       setStats((prev) => ({
         ...prev,
@@ -35,6 +37,7 @@ export function LiveStats() {
       }))
     })
 
+    // attendance event
     const unsubscribeAttendance = subscribe("attendance:new", () => {
       setStats((prev) => ({
         ...prev,
@@ -44,6 +47,7 @@ export function LiveStats() {
       }))
     })
 
+    // camera status event
     const unsubscribeCameraStatus = subscribe("camera:status", (data: { status: string }) => {
       setStats((prev) => ({
         ...prev,
@@ -78,7 +82,10 @@ export function LiveStats() {
       icon: UserCheck,
       color: "text-secondary",
       bgColor: "bg-secondary/10",
-      subtitle: `${((stats.presentToday / stats.totalEmployees) * 100).toFixed(1)}% attendance`,
+      subtitle:
+        stats.totalEmployees > 0
+          ? `${((stats.presentToday / stats.totalEmployees) * 100).toFixed(1)}% attendance`
+          : undefined,
     },
     {
       title: "Cameras Online",
@@ -107,7 +114,9 @@ export function LiveStats() {
             <Activity className="h-3 w-3 mr-1" />
             Live
           </Badge>
-          <span className="text-xs text-muted-foreground">Updated: {formatLastUpdated(stats.lastUpdated)}</span>
+          <span className="text-xs text-muted-foreground">
+            Updated: {formatLastUpdated(stats.lastUpdated)}
+          </span>
         </div>
       </div>
 

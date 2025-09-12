@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Legend } from "recharts"
 import type { LateArrivalData } from "@/types/reports"
 
 interface LateArrivalsChartProps {
@@ -32,14 +32,15 @@ export function LateArrivalsChart({ data }: LateArrivalsChartProps) {
               <ChartTooltip
                 content={
                   <ChartTooltipContent
-                    formatter={(value, name) => [
-                      `${value} employees (${data.find((d) => d.count === value)?.percentage.toFixed(1)}%)`,
-                      "Late Arrivals",
-                    ]}
+                    formatter={(value, name, props) => {
+                      const percentage = props?.payload?.percentage
+                      return [`${value} employees (${percentage?.toFixed(1)}%)`, chartConfig.count.label]
+                    }}
                   />
                 }
               />
-              <Bar dataKey="count" fill={chartConfig.count.color} />
+              <Legend />
+              <Bar dataKey="count" name={chartConfig.count.label} fill={chartConfig.count.color} />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>

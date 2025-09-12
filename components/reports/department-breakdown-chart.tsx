@@ -29,8 +29,11 @@ const chartConfig = {
 }
 
 export function DepartmentBreakdownChart({ data }: DepartmentBreakdownChartProps) {
+  const safeData = data ?? []
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Department Breakdown */}
       <Card>
         <CardHeader>
           <CardTitle>Department Attendance Breakdown</CardTitle>
@@ -39,20 +42,21 @@ export function DepartmentBreakdownChart({ data }: DepartmentBreakdownChartProps
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <BarChart data={safeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <XAxis dataKey="department" angle={-45} textAnchor="end" height={80} />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Legend />
-                <Bar dataKey="present" stackId="a" fill={chartConfig.present.color} />
-                <Bar dataKey="late" stackId="a" fill={chartConfig.late.color} />
-                <Bar dataKey="absent" stackId="a" fill={chartConfig.absent.color} />
+                <Bar dataKey="present" stackId="a" name={chartConfig.present.label} fill={chartConfig.present.color} />
+                <Bar dataKey="late" stackId="a" name={chartConfig.late.label} fill={chartConfig.late.color} />
+                <Bar dataKey="absent" stackId="a" name={chartConfig.absent.label} fill={chartConfig.absent.color} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         </CardContent>
       </Card>
 
+      {/* Department Attendance Rates */}
       <Card>
         <CardHeader>
           <CardTitle>Department Attendance Rates</CardTitle>
@@ -61,15 +65,22 @@ export function DepartmentBreakdownChart({ data }: DepartmentBreakdownChartProps
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <BarChart data={safeData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <XAxis dataKey="department" angle={-45} textAnchor="end" height={80} />
                 <YAxis domain={[0, 100]} />
                 <ChartTooltip
                   content={
-                    <ChartTooltipContent formatter={(value) => [`${Number(value).toFixed(1)}%`, "Attendance Rate"]} />
+                    <ChartTooltipContent
+                      formatter={(value) => [`${Number(value).toFixed(1)}%`, chartConfig.attendanceRate.label]}
+                    />
                   }
                 />
-                <Bar dataKey="attendanceRate" fill={chartConfig.attendanceRate.color} />
+                <Legend />
+                <Bar
+                  dataKey="attendanceRate"
+                  name={chartConfig.attendanceRate.label}
+                  fill={chartConfig.attendanceRate.color}
+                />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

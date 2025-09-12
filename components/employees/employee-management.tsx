@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -22,110 +22,52 @@ export function EmployeeManagement() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
 
-  // Mock data - replace with real API calls
+  // Load employees from Flask backend
   useEffect(() => {
-    const mockEmployees: Employee[] = [
-      {
-        id: "1",
-        employeeId: "EMP001",
-        name: "Sarah Johnson",
-        email: "sarah.johnson@company.com",
-        department: "Engineering",
-        position: "Senior Developer",
-        phone: "+1 (555) 123-4567",
-        status: "active",
-        hireDate: "2022-03-15",
-        createdAt: "2022-03-15T09:00:00Z",
-        updatedAt: "2024-01-15T10:30:00Z",
-      },
-      {
-        id: "2",
-        employeeId: "EMP002",
-        name: "Michael Chen",
-        email: "michael.chen@company.com",
-        department: "Design",
-        position: "UI/UX Designer",
-        phone: "+1 (555) 234-5678",
-        status: "active",
-        hireDate: "2021-11-20",
-        createdAt: "2021-11-20T09:00:00Z",
-        updatedAt: "2024-01-10T14:20:00Z",
-      },
-      {
-        id: "3",
-        employeeId: "EMP003",
-        name: "Emily Rodriguez",
-        email: "emily.rodriguez@company.com",
-        department: "Marketing",
-        position: "Marketing Manager",
-        phone: "+1 (555) 345-6789",
-        status: "active",
-        hireDate: "2023-01-10",
-        createdAt: "2023-01-10T09:00:00Z",
-        updatedAt: "2024-01-05T16:45:00Z",
-      },
-      {
-        id: "4",
-        employeeId: "EMP004",
-        name: "David Kim",
-        email: "david.kim@company.com",
-        department: "Engineering",
-        position: "DevOps Engineer",
-        phone: "+1 (555) 456-7890",
-        status: "inactive",
-        hireDate: "2022-08-05",
-        createdAt: "2022-08-05T09:00:00Z",
-        updatedAt: "2024-01-12T11:15:00Z",
-      },
-      {
-        id: "5",
-        employeeId: "EMP005",
-        name: "Lisa Thompson",
-        email: "lisa.thompson@company.com",
-        department: "HR",
-        position: "HR Specialist",
-        phone: "+1 (555) 567-8901",
-        status: "active",
-        hireDate: "2021-06-12",
-        createdAt: "2021-06-12T09:00:00Z",
-        updatedAt: "2024-01-08T13:30:00Z",
-      },
-    ]
-
-    setEmployees(mockEmployees)
+    const fetchEmployees = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/employees")
+        const data = await res.json()
+        setEmployees(data)
+      } catch (err) {
+        console.error("Failed to fetch employees:", err)
+      }
+    }
+    fetchEmployees()
   }, [])
 
-  // Filter and sort employees
+  // Departments list
+  const departments = useMemo(
+    () => Array.from(new Set(employees.map((emp) => emp.department))).filter(Boolean),
+    [employees],
+  )
+
+  // Filtering + sorting
   useEffect(() => {
     const filtered = employees.filter((employee) => {
       const matchesSearch =
         filters.search === "" ||
         employee.name.toLowerCase().includes(filters.search.toLowerCase()) ||
         employee.email.toLowerCase().includes(filters.search.toLowerCase()) ||
-        employee.employeeId.toLowerCase().includes(filters.search.toLowerCase())
+        employee.employee_id.toLowerCase().includes(filters.search.toLowerCase())
 
       const matchesDepartment = filters.department === "All Departments" || employee.department === filters.department
-
       const matchesStatus = filters.status === "All Status" || employee.status === filters.status
-
       return matchesSearch && matchesDepartment && matchesStatus
     })
 
-    // Sort employees
     filtered.sort((a, b) => {
       let aValue: string | Date
       let bValue: string | Date
-
       switch (sortField) {
-        case "hireDate":
-          aValue = new Date(a.hireDate)
-          bValue = new Date(b.hireDate)
+        case "hire_date":
+          aValue = new Date(a.hire_date)
+          bValue = new Date(b.hire_date)
           break
         default:
-          aValue = a[sortField].toLowerCase()
-          bValue = b[sortField].toLowerCase()
+          aValue = (a[sortField] as string).toLowerCase()
+          bValue = (b[sortField] as string).toLowerCase()
       }
-
       if (aValue < bValue) return sortDirection === "asc" ? -1 : 1
       if (aValue > bValue) return sortDirection === "asc" ? 1 : -1
       return 0
@@ -144,34 +86,22 @@ export function EmployeeManagement() {
     setIsDialogOpen(true)
   }
 
-  const handleDeleteEmployee = (employeeId: string) => {
-    setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId))
-  }
-
-  const handleSaveEmployee = (employeeData: Partial<Employee>) => {
-    if (selectedEmployee) {
-      // Update existing employee
-      setEmployees((prev) =>
-        prev.map((emp) =>
-          emp.id === selectedEmployee.id ? { ...emp, ...employeeData, updatedAt: new Date().toISOString() } : emp,
-        ),
-      )
-    } else {
-      // Add new employee
-      const newEmployee: Employee = {
-        id: Date.now().toString(),
-        employeeId: `EMP${(employees.length + 1).toString().padStart(3, "0")}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        ...employeeData,
-      } as Employee
-
-      setEmployees((prev) => [...prev, newEmployee])
+  const handleDeleteEmployee = async (employeeId: string) => {
+    try {
+      await fetch(`http://localhost:5000/api/employees/${employeeId}`, { method: "DELETE" })
+      setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId))
+    } catch (err) {
+      console.error("Failed to delete employee:", err)
     }
-    setIsDialogOpen(false)
   }
 
-  const departments = Array.from(new Set(employees.map((emp) => emp.department)))
+  const handleSaveEmployee = (saved: Employee) => {
+    if (selectedEmployee) {
+      setEmployees((prev) => prev.map((emp) => (emp.id === saved.id ? saved : emp)))
+    } else {
+      setEmployees((prev) => [...prev, saved])
+    }
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -236,7 +166,7 @@ export function EmployeeManagement() {
           setSortDirection(direction)
         }}
         onEdit={handleEditEmployee}
-        onDelete={handleDeleteEmployee}
+        onDelete={(id) => handleDeleteEmployee(id)}
       />
 
       {/* Employee Dialog */}
