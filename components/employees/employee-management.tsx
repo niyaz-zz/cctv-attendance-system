@@ -24,15 +24,15 @@ export function EmployeeManagement() {
 
   // Load employees from Flask backend
   useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/employees")
-        const data = await res.json()
-        setEmployees(data)
-      } catch (err) {
-        console.error("Failed to fetch employees:", err)
-      }
-    }
+const fetchEmployees = async () => {
+  try {
+    const res = await fetch("http://localhost:5000/api/employees")
+    const data = await res.json()
+    setEmployees(data)
+  } catch (err) {
+    console.error("Failed to fetch employees:", err)
+  }
+}
     fetchEmployees()
   }, [])
 
@@ -86,22 +86,23 @@ export function EmployeeManagement() {
     setIsDialogOpen(true)
   }
 
-  const handleDeleteEmployee = async (employeeId: string) => {
-    try {
-      await fetch(`http://localhost:5000/api/employees/${employeeId}`, { method: "DELETE" })
-      setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId))
-    } catch (err) {
-      console.error("Failed to delete employee:", err)
-    }
+const handleDeleteEmployee = async (employeeId: string) => {
+  try {
+    await fetch(`http://localhost:5000/api/employees/${employeeId}`, { method: "DELETE" })
+    await fetchEmployees() // <-- Fetch fresh data after delete
+  } catch (err) {
+    console.error("Failed to delete employee:", err)
   }
+}
 
-  const handleSaveEmployee = (saved: Employee) => {
-    if (selectedEmployee) {
-      setEmployees((prev) => prev.map((emp) => (emp.id === saved.id ? saved : emp)))
-    } else {
-      setEmployees((prev) => [...prev, saved])
-    }
+const handleSaveEmployee = (saved: Employee) => {
+  if (selectedEmployee) {
+    setEmployees((prev) => prev.map((emp) => (emp.id === saved.id ? saved : emp)))
+  } else {
+    setEmployees((prev) => [...prev, saved])
   }
+  setIsDialogOpen(false) // <-- This will close the dialog after save
+}
 
   return (
     <div className="p-6 space-y-6">
@@ -156,18 +157,17 @@ export function EmployeeManagement() {
         </Select>
       </div>
 
-      {/* Employee Table */}
-      <EmployeeTable
-        employees={filteredEmployees}
-        sortField={sortField}
-        sortDirection={sortDirection}
-        onSort={(field, direction) => {
-          setSortField(field)
-          setSortDirection(direction)
-        }}
-        onEdit={handleEditEmployee}
-        onDelete={(id) => handleDeleteEmployee(id)}
-      />
+<EmployeeTable
+  employees={filteredEmployees}
+  sortField={sortField}
+  sortDirection={sortDirection}
+  onSort={(field, direction) => {
+    setSortField(field)
+    setSortDirection(direction)
+  }}
+  onEdit={handleEditEmployee}
+  onDelete={(id) => handleDeleteEmployee(id)} // Make sure id is correct
+/>
 
       {/* Employee Dialog */}
       <EmployeeDialog

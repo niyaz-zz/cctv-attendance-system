@@ -31,7 +31,7 @@ const navigation = [
   { name: "Attendance", href: "/attendance", icon: Clock },
   { name: "Reports", href: "/reports", icon: BarChart3 },
   { name: "Cameras", href: "/cameras", icon: Camera },
-  { name: "Live Feed", href: "/live", icon: Video }, // ✅ Added for HLS live stream
+  { name: "Live Feed", href: "/live", icon: Video },
   { name: "Settings", href: "/settings", icon: Settings },
 ]
 
@@ -70,6 +70,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <li key={item.name}>
                   <Link
                     href={item.href}
+                    prefetch={true}
                     className={cn(
                       "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
                       isActive
