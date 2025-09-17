@@ -16,11 +16,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/employees/page.js"
     ],
-    "/attendance/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/attendance/page.js"
-    ],
     "/reports/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -31,15 +26,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/reports/page.js"
     ],
-    "/cameras/page": [
+    "/attendance/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/cameras/page.js"
-    ],
-    "/settings/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/settings/page.js"
+      "static/chunks/app/attendance/page.js"
     ]
   }
 }
